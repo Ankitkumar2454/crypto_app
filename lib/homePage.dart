@@ -1,58 +1,50 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:crypto_app/coin.dart';
 import 'package:crypto_app/favoritePage.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:crypto_app/detailPage.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'homepage';
-  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // Map<String, String> headers = {
-  //   "Content-Type": "application/json",
-  //   "Accept": "application/json",
-  //   "X-CMC_PRO_API_KEY": "88cba1f2-73e8-451c-9889-58a3e77d0f75",
-  // };
-  // Future<List<Coin>> fetchCoin() async {
-  //   coinList = [];
-  //   Response response = await get(
-  //       Uri.parse(
-  //           'https://pro-api.coinmarketcap.com/v1/cryptocurrency/category'),
-  //       headers: headers);
+  Future<List<Coin>> fetchCoin() async {
+    coinList = [];
+    final response = await http.get(Uri.parse(
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false'));
 
-  //   if (response.statusCode == 200) {
-  //     List<dynamic> values = [];
-  //     values = jsonDecode(response.body);
-  //     print(values); //json
+    if (response.statusCode == 200) {
+      List<dynamic> values = [];
+      values = json.decode(response.body);
+      if (values.length > 0) {
+        for (int i = 0; i < values.length; i++) {
+          if (values[i] != null) {
+            Map<String, dynamic> map = values[i];
+            coinList.add(Coin.fromJson(map));
+          }
+        }
+        setState(() {
+          coinList;
+        });
+      }
+      return coinList;
+    } else {
+      throw Exception('Failed to load coins');
+    }
+  }
 
-  //     // if (values.length > 0) {
-  //     //   for (int i = 0; i < values.length; i++) {
-  //     //     if (values[i] != null) {
-  //     //       Map<String, dynamic> map = values[i];
-  //     //       coinList.add(Coin.fromJson(map));
-  //     //     }
-  //     //   }
-  //     //   setState(() {
-  //     //     coinList;
-  //     //   });
-  //     // }
-  //   } else {
-  //     throw Exception('Failed to load coins');
-  //   }
-  //   return coinList;
-  // }
-
-  // @override
-  // void initState() {
-  //   //fetchCoin();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    fetchCoin();
+    Timer.periodic(Duration(seconds: 10), (timer) => fetchCoin());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +65,7 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => FavoritePage(
-                      imageUrl:
-                          'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8Yml0Y29pbnxlbnwwfHwwfHw%3D&w=1000&q=80',
-                      name: 'bitc',
+                      coinlist: coinList,
                     ),
                   )),
               child: Container(
@@ -87,36 +77,56 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: ListView.builder(
-        itemCount: 5,
-        itemBuilder: ((context, index) {
-          return CoinCard(
-            imageUrl:
-                'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8Yml0Y29pbnxlbnwwfHwwfHw%3D&w=1000&q=80',
-            name: 'bitcoin',
-            marketCap: '346',
-            symbol: 'dance',
-            priceChange: 45,
-          );
-        }),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height,
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: coinList.length,
+                  itemBuilder: (context, index) {
+                    if (index > 0) {
+                      return CoinCard(
+                        name: coinList[index].name,
+                        symbol: coinList[index].symbol,
+                        imageUrl: coinList[index].imageUrl,
+                        marketcap: coinList[index].marketcap.toDouble(),
+                        pricechange: coinList[index]
+                            .pricechange
+                            .toDouble(), //24 hour percentage
+                        changePercentage:
+                            coinList[index].changePercentage.toDouble(),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                )),
+          ),
+        ],
       ),
     );
   }
 }
 
 class CoinCard extends StatefulWidget {
-  String imageUrl;
-  String name;
-  String marketCap;
-  String symbol;
-  double priceChange;
   CoinCard({
-    required this.imageUrl,
     required this.name,
-    required this.marketCap,
     required this.symbol,
-    required this.priceChange,
+    required this.imageUrl,
+    required this.marketcap,
+    required this.pricechange,
+    required this.changePercentage,
   });
+
+  String name;
+  String symbol;
+  String imageUrl;
+  double marketcap;
+  double pricechange;
+  double changePercentage;
 
   @override
   State<CoinCard> createState() => _CoinCardState();
@@ -139,14 +149,13 @@ class _CoinCardState extends State<CoinCard> {
               context,
               MaterialPageRoute(
                 builder: (context) => DetailPage(
-                  marketCap: widget.marketCap,
+                  marketCap: widget.marketcap,
                   symbol: widget.symbol,
-                  priceChange: widget.priceChange,
-                  imageUrl: widget.imageUrl,
+                  changePercentage: widget.changePercentage,
                 ),
               )),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ClipRRect(
                 clipBehavior: Clip.antiAlias,
@@ -162,15 +171,12 @@ class _CoinCardState extends State<CoinCard> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                widget.name,
-                style: TextStyle(fontSize: 30, color: Colors.white),
-              ),
-              SizedBox(
-                width: 20,
+              Container(
+                width: 200,
+                child: Text(
+                  widget.name,
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
               ),
               IconButton(
                 onPressed: () {

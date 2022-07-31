@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 
 class DetailPage extends StatelessWidget {
   static String id = 'detailpage';
-  String marketCap;
+  double marketCap;
   String symbol;
-  double priceChange;
-  String imageUrl;
+  double changePercentage;
+
   DetailPage({
     required this.marketCap,
     required this.symbol,
-    required this.priceChange,
-    required this.imageUrl,
+    required this.changePercentage,
   });
 
   @override
@@ -27,7 +26,7 @@ class DetailPage extends StatelessWidget {
           ),
         ),
         body: Container(
-          color: Colors.grey[200],
+          color: Colors.pink,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,66 +34,47 @@ class DetailPage extends StatelessWidget {
               SizedBox(
                 height: 30,
               ),
-              Container(
-                  height: 100,
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Card(
                   color: Colors.grey[600],
-                  child: Image.network(imageUrl)),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 50,
-                      color: Colors.grey[600],
-                      child: Text(
-                        'Symbol=  $symbol',
-                        style: TextStyle(
-                          fontSize: 30,
-                        ),
-                      ),
+                  child: Text(
+                    'Symbol:  $symbol',
+                    style: TextStyle(
+                      fontSize: 50,
                     ),
                   ),
-                ],
+                ),
               ),
               SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 50,
-                      color: Colors.grey[600],
-                      child: Text(
-                        'marketCap=  $marketCap',
-                        style: TextStyle(
-                          fontSize: 30,
-                        ),
-                      ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Card(
+                  color: Colors.grey[600],
+                  child: Text(
+                    'marketCap:  $marketCap',
+                    style: TextStyle(
+                      fontSize: 45,
                     ),
                   ),
-                ],
+                ),
               ),
               SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 50,
-                      color: Colors.grey[600],
-                      child: Text(
-                        'priceChange= ${priceChange.toDouble() < 0 ? '-' + priceChange.toDouble().toString() : '+' + priceChange.toDouble().toString()}',
-                        style: TextStyle(
-                          fontSize: 30,
-                        ),
-                      ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Card(
+                  color: Colors.grey[600],
+                  child: Text(
+                    'priceChange24hr%= ${changePercentage.toDouble() < 0 ? '-' + changePercentage.toDouble().toString() + '%' : '+' + changePercentage.toDouble().toString() + '%'}',
+                    style: TextStyle(
+                      fontSize: 40,
                     ),
                   ),
-                ],
+                ),
               ),
             ],
           ),

@@ -1,8 +1,5 @@
-import 'package:crypto_app/detailPage.dart';
-import 'package:crypto_app/favoritePage.dart';
 import 'package:crypto_app/homePage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
