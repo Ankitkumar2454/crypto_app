@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:crypto_app/coin.dart';
 
 class FavoritePage extends StatelessWidget {
-  List coinlist;
-  FavoritePage({
-    required this.coinlist,
-  });
-
   static String id = 'favoritepage';
   @override
   Widget build(BuildContext context) {
@@ -21,36 +17,38 @@ class FavoritePage extends StatelessWidget {
           ),
         ),
         body: Container(
-          color: Colors.black,
           child: ListView.builder(
-            itemCount: coinlist.length,
+            itemCount: coinList.length,
             itemBuilder: ((context, index) {
-              return Card(
-                color: Colors.blue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 10),
-                      child: Container(
-                        height: 40,
-                        width: 50,
-                        child: Image.network(
-                          coinlist[index].name,
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Card(
+                  color: Colors.blue,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 10),
+                        child: Container(
+                          height: 40,
+                          width: 50,
+                          child: Image.network(
+                            coinList[index].imageUrl,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      coinlist[index]['name'],
-                      style: TextStyle(
-                        fontSize: 30,
+                      Text(
+                        coinList[index].name,
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
+                      SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  ),
                 ),
               );
             }),

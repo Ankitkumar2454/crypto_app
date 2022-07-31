@@ -64,9 +64,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FavoritePage(
-                      coinlist: coinList,
-                    ),
+                    builder: (context) => FavoritePage(),
                   )),
               child: Container(
                   height: 20,
@@ -93,9 +91,7 @@ class _HomePageState extends State<HomePage> {
                         symbol: coinList[index].symbol,
                         imageUrl: coinList[index].imageUrl,
                         marketcap: coinList[index].marketcap.toDouble(),
-                        pricechange: coinList[index]
-                            .pricechange
-                            .toDouble(), //24 hour percentage
+                        pricechange: coinList[index].pricechange.toDouble(),
                         changePercentage:
                             coinList[index].changePercentage.toDouble(),
                       );

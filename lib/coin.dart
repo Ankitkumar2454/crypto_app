@@ -28,3 +28,4 @@ class Coin {
 }
 
 List<Coin> coinList = [];
+List<String> favoriteDataList = [];//last remove
