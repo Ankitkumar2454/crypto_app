@@ -19,8 +19,6 @@ class MyApp extends StatelessWidget {
       initialRoute: HomePage.id,
       routes: {
         HomePage.id: (context) => HomePage(),
-        // DetailPage.id: (context) => DetailPage(),
-        FavoritePage.id: (context) => FavoritePage(),
       },
     );
   }
