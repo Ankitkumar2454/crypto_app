@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:crypto_app/coin.dart';
-import 'package:crypto_app/favoritePage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:crypto_app/coin.dart';
+import 'package:crypto_app/databaseHelper.dart';
 import 'package:crypto_app/detailPage.dart';
+import 'package:crypto_app/favoritePage.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'homepage';
@@ -43,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     fetchCoin();
     Timer.periodic(Duration(seconds: 10), (timer) => fetchCoin());
+
     super.initState();
   }
 
@@ -85,6 +89,7 @@ class _HomePageState extends State<HomePage> {
                   scrollDirection: Axis.vertical,
                   itemCount: coinList.length,
                   itemBuilder: (context, index) {
+                    var finallist = coinList[index]; //shortcut
                     if (index > 0) {
                       return CoinCard(
                         name: coinList[index].name,
@@ -94,6 +99,7 @@ class _HomePageState extends State<HomePage> {
                         pricechange: coinList[index].pricechange.toDouble(),
                         changePercentage:
                             coinList[index].changePercentage.toDouble(),
+                        list: finallist,
                       );
                     } else {
                       return Container();
@@ -115,6 +121,7 @@ class CoinCard extends StatefulWidget {
     required this.marketcap,
     required this.pricechange,
     required this.changePercentage,
+    required this.list,
   });
 
   String name;
@@ -123,13 +130,16 @@ class CoinCard extends StatefulWidget {
   double marketcap;
   double pricechange;
   double changePercentage;
+  Coin list;
 
   @override
   State<CoinCard> createState() => _CoinCardState();
 }
 
 class _CoinCardState extends State<CoinCard> {
+  DatabaseHelper _db = DatabaseHelper();
   bool tapped = false;
+  int DataId = 0;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -175,10 +185,13 @@ class _CoinCardState extends State<CoinCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
+                  DataId = await _db.insertData(widget.list);
+                  print('data inserted');
                   setState(() {
                     tapped = !tapped;
                   });
+                  //print('${DataId}');
                 },
                 icon: tapped
                     ? Icon(

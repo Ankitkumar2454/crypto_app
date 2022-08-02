@@ -19,17 +19,18 @@ class DetailPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.blueGrey,
           title: Text(
-            "detailed page",
+            "Detailed page",
             style: TextStyle(
               fontSize: 40,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
         body: Container(
-          color: Colors.pink,
+          color: Colors.lightBlue,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
                 height: 30,
@@ -42,6 +43,7 @@ class DetailPage extends StatelessWidget {
                     'Symbol:  $symbol',
                     style: TextStyle(
                       fontSize: 50,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -69,7 +71,7 @@ class DetailPage extends StatelessWidget {
                 child: Card(
                   color: Colors.grey[600],
                   child: Text(
-                    'priceChange24hr%= ${changePercentage.toDouble() < 0 ? '-' + changePercentage.toDouble().toString() + '%' : '+' + changePercentage.toDouble().toString() + '%'}',
+                    'priceChange24hr% : ${changePercentage.toDouble() < 0 ? '-' + changePercentage.toDouble().toString() + '%' : '+' + changePercentage.toDouble().toString() + '%'}',
                     style: TextStyle(
                       fontSize: 40,
                     ),
